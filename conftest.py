@@ -1,7 +1,9 @@
 import pytest  # Импортируем pytest для создания фикстур
 import allure
 from playwright.sync_api import sync_playwright  # Импортируем менеджер контекста Playwright
+from dotenv import load_dotenv
 
+load_dotenv()  # читает .env в переменные окружения
 
 @pytest.fixture(scope="session")  # Одна фикстура на весь прогон
 def browser():
