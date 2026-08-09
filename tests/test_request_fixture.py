@@ -14,7 +14,7 @@ BASE_URL = "https://edversemovie.ru"
 
 
 @pytest.fixture()
-def login_credentials(request) -> tuple[str, str]:
+def login_credentials(request) -> tuple[str, str]: # <---request 
     """Берёт пару (email, password) из параметризации теста."""
     email, password = request.param
     print(f"Фикстура получила: {email} / {password}")
