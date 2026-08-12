@@ -23,17 +23,28 @@ class ApiClient:
         )
         response.raise_for_status()
         return response.json()
-
+    
     def delete_user(self, user_id: str, token: str) -> None:
         """Удаляет пользователя. Нужен токен: удалить можно только себя."""
-        requests.delete(
+        response = requests.delete(
             f"{AUTH_URL}/user/{user_id}",
             headers={"Authorization": f"Bearer {token}"},
             timeout=10,
         )
-
+        response.raise_for_status() 
+           
     def get_movies(self) -> list:
         """Список фильмов (сервис api)."""
         response = requests.get(f"{API_URL}/movies", timeout=10)
         response.raise_for_status()
         return response.json()["movies"]  # ответ обёрнут: {"movies": [...], ...}
+    
+    def login(self, email: str, password: str) -> str:
+            """Логинится и возвращает accessToken."""
+            response = requests.post(
+                f"{AUTH_URL}/login",
+                json={"email": email, "password": password},
+                timeout=10,
+            )
+            response.raise_for_status()
+            return response.json()["accessToken"]  # имя поля сверь по swagger
