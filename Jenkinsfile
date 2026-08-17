@@ -24,7 +24,7 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'curl -sS https://bootstrap.pypa.io/get-pip.py | python3 -- --user && ~/.local/bin/pip install --user -r requirements.txt'
+                sh 'python3 -m venv venv && venv/bin/pip install -r requirements.txt'
             }
         }
 
