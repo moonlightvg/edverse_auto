@@ -1,10 +1,28 @@
+import os
 import pytest
+import psycopg2
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from api.api_manager import ApiManager
 from config import AUTH_URL, API_URL
+from db.client import DbClient
 from utils.data_generators import generate_register_user
+
+
+@pytest.fixture(autouse=True)
+def check_db_access():
+    """Пропускает тест если БД недоступна (локальная разработка)."""
+    try:
+        conn = psycopg2.connect(
+            host=os.getenv("DB_HOST"), port=os.getenv("DB_PORT"),
+            dbname=os.getenv("DB_NAME"), user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASS"), connect_timeout=3,
+        )
+        conn.close()
+    except Exception:
+        pytest.skip("dev-Postgres недоступен - тест запускать в Jenkins")
+
 
 @pytest.fixture(scope="session")
 def session():
@@ -29,7 +47,7 @@ def api_manager(session):
 def created_user(api_manager):
     """Создаёт пользователя через API и удаляет его после теста."""
     user = generate_register_user()
-    user["email"] = user["email"].replace("_", "")  # сервер не любит подчёркивания
+    user["email"] = user["email"].replace("_", "")
 
     response = api_manager.auth.register_user({
         "email": user["email"],
@@ -39,24 +57,21 @@ def created_user(api_manager):
     })
     created = response.json()
 
-    # пароль в ответе API нет - кладём сами, тестам он нужен для логина
     created["password"] = user["password"]
 
-    # для чистки нужен токен: логинимся сразу после создания
     login_response = api_manager.auth.login({
         "email": user["email"],
         "password": user["password"],
     })
     created["token"] = login_response.json()["accessToken"]
 
-    yield created  # тест получает созданного юзера и работает
+    yield created
 
-    # а после теста - уборка (выполнится даже если тест упал!)
     api_manager.auth.delete_user(created["id"], created["token"])
-    
-@pytest.fixture()              # объявляем фикстуру
-def db():                      # имя фикстуры = имя параметра, который просят тесты
+
+@pytest.fixture()
+def db():
     """Открывает подключение к БД и закрывает после теста."""
-    client = DbClient()   # setup: создаём подключение ДО теста
-    yield client          # передаём клиент тесту; после теста выполнение продолжается здесь
-    client.close()        # teardown: закрываем соединение (даже если тест упал)
+    client = DbClient()
+    yield client
+    client.close()
