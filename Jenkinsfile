@@ -24,13 +24,13 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'pip install --user -r requirements.txt'
+                sh 'python3 -m pip install --user -r requirements.txt'
             }
         }
 
         stage('Run tests') {
             steps {
-                sh 'python -m pytest --alluredir=allure-results -v || true'
+                sh 'python3 -m pytest --alluredir=allure-results -v || true'
             }
         }
     }
