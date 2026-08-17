@@ -30,7 +30,7 @@ pipeline {
 
         stage('Run tests') {
             steps {
-                sh '~/.local/bin/pytest --alluredir=allure-results -v || true'
+                sh 'venv/bin/pytest --alluredir=allure-results -v || true'
             }
         }
     }
@@ -38,7 +38,7 @@ pipeline {
 
     post {
         always {
-            allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
+            archiveArtifacts artifacts: 'allure-results/**', allowEmptyArchive: true
         }
     }
 }
