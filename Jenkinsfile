@@ -22,15 +22,21 @@ pipeline {
             }
         }
 
-        stage('Install') {
+        stage('Install pip') {
             steps {
-                sh 'python3 -m ensurepip --upgrade && python3 -m pip install --user -r requirements.txt'
+                sh 'curl -sS https://bootstrap.pypa.io/get-pip.py | python3 -- --user'
+            }
+        }
+
+        stage('Install deps') {
+            steps {
+                sh '~/.local/bin/pip install --user -r requirements.txt'
             }
         }
 
         stage('Run tests') {
             steps {
-                sh 'python3 -m pytest --alluredir=allure-results -v || true'
+                sh '~/.local/bin/pytest --alluredir=allure-results -v || true'
             }
         }
     }
