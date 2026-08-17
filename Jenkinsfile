@@ -22,15 +22,9 @@ pipeline {
             }
         }
 
-        stage('Install pip') {
+        stage('Install') {
             steps {
-                sh 'curl -sS https://bootstrap.pypa.io/get-pip.py | python3 -- --user'
-            }
-        }
-
-        stage('Install deps') {
-            steps {
-                sh '~/.local/bin/pip install --user -r requirements.txt'
+                sh 'curl -sS https://bootstrap.pypa.io/get-pip.py | python3 -- --user && ~/.local/bin/pip install --user -r requirements.txt'
             }
         }
 
@@ -40,6 +34,7 @@ pipeline {
             }
         }
     }
+
 
     post {
         always {
