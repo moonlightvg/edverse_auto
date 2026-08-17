@@ -8,7 +8,7 @@ pipeline {
         DB_PORT = credentials('DB_PORT')
         DB_NAME = credentials('DB_NAME')
         DB_USER = credentials('DB_USER')
-        DB_PASS=***
+        DB_PASS = credentials('DB_PASS')
     }
 
     triggers {
