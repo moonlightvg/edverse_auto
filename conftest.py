@@ -1,3 +1,4 @@
+import os
 import pytest  # Импортируем pytest для создания фикстур
 import allure
 from playwright.sync_api import sync_playwright  # Импортируем менеджер контекста Playwright
@@ -9,7 +10,7 @@ load_dotenv()  # читает .env в переменные окружения
 def browser():
     """Один браузер на весь прогон — не нужно открывать его для каждого теста."""
     with sync_playwright() as p:  # Открываем контекст Playwright (автоматически закроется после блока)
-        b = p.chromium.launch(headless=True)  # headless=False — браузер будет открыт, видно, как выполняются действия
+        b = p.chromium.launch(headless=os.getenv("CI") != "true")  # headless=False — браузер будет открыт, видно, как выполняются действия
         yield b  # Возвращаем браузер в тест и замораживаем выполнение функции
         # После завершения всех тестов выполнение вернется сюда
         b.close()  # Закрываем браузер
