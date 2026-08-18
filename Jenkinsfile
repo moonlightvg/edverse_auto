@@ -30,10 +30,16 @@ pipeline {
 
         stage('Run tests') {
             steps {
-                sh 'PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright venv/bin/pytest --alluredir=allure-results -v || true'
+                sh 'PLAYWRIGHT_BROWSERS_PATH=/var/lib/jenkins/.cache/ms-playwright venv/bin/pytest --alluredir=allure-results -v || true'
             }
         }
     }
+
+        stage('Debug') {
+            steps {
+                sh 'echo "DB_HOST=$DB_HOST" && echo "DB_PORT=$DB_PORT" && echo "DB_NAME=$DB_NAME"'
+        }
+}
 
 
     post {
