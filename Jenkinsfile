@@ -1,5 +1,5 @@
 pipeline {
-    agent { docker { image 'mcr.microsoft.com/playwright/python:v1.62.0-noble' } }
+    agent { docker { image 'mcr.microsoft.com/playwright/python:v1.62.0-noble'; args '-u root' } }
 
     environment {
         ALLURE_RESULTS = 'allure-results'
