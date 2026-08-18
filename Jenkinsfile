@@ -30,7 +30,7 @@ pipeline {
 
         stage('Run tests') {
             steps {
-                sh 'venv/bin/pytest --alluredir=allure-results -v || true'
+                sh 'PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright venv/bin/pytest --alluredir=allure-results -v || true'
             }
         }
     }
