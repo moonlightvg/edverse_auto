@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { docker { image 'mcr.microsoft.com/playwright/python:v1.62.0-noble' } }
 
     environment {
         ALLURE_RESULTS = 'allure-results'
@@ -24,19 +24,13 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'python3 -m pip install --break-system-packages -r requirements.txt'
-            }
-        }
-
-        stage('Install Playwright') {
-            steps {
-                sh 'PLAYWRIGHT_BROWSERS_PATH=/var/lib/jenkins/.cache/ms-playwright venv/bin/playwright install chromium'
+                sh 'pip install --no-cache-dir -r requirements.txt'
             }
         }
 
         stage('Run tests') {
             steps {
-                sh 'PLAYWRIGHT_BROWSERS_PATH=/var/lib/jenkins/.cache/ms-playwright python3 -m pytest --alluredir=allure-results -v || true'
+                sh 'pytest --alluredir=allure-results -v || true'
             }
         }
     }
