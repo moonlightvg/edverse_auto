@@ -24,7 +24,8 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'pip install --no-cache-dir -r requirements.txt allure-commandline'
+                sh 'pip install --no-cache-dir -r requirements.txt'
+                sh 'npm install -g allure'
             }
         }
 
