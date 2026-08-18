@@ -17,7 +17,7 @@ def check_db_access():
         conn = psycopg2.connect(
             host=os.getenv("DB_HOST"), port=os.getenv("DB_PORT"),
             dbname=os.getenv("DB_NAME"), user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASS"), connect_timeout=3,
+            password=os.getenv("DB_PASS"), connect_timeout=3, sslmode='require',
         )
         conn.close()
     except Exception as e:

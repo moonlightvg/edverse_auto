@@ -14,7 +14,7 @@ class DbClient:                 # класс-обёртка над подклю�
             port=os.getenv("DB_PORT"),                      # порт - из .env
             dbname=os.getenv("DB_NAME"),                    # имя базы - из .env
             user=os.getenv("DB_USER"),                      # пользователь - из .env
-            password=os.getenv("DB_PASS"),                  # пароль - из .env
+            password=os.getenv("DB_PASS"), sslmode="require",                  # пароль - из .env
         )
         self.conn.autocommit = True  # не ждём commit вручную - проще для SELECT
 

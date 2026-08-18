@@ -28,9 +28,9 @@ pipeline {
             }
         }
 
-        stage('Debug env') {
+        stage('Install Playwright') {
             steps {
-                sh 'echo "DB_HOST=$DB_HOST" && echo "DB_PORT=$DB_PORT" && echo "DB_NAME=$DB_NAME" && echo "DB_USER=$DB_USER"'
+                sh 'PLAYWRIGHT_BROWSERS_PATH=/var/lib/jenkins/.cache/ms-playwright venv/bin/playwright install chromium'
             }
         }
 
@@ -47,4 +47,3 @@ pipeline {
         }
     }
 }
-Ы
