@@ -24,7 +24,7 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'python3 -m venv venv && venv/bin/pip install -r requirements.txt'
+                sh 'python3 -m pip install --break-system-packages -r requirements.txt'
             }
         }
 
@@ -36,7 +36,7 @@ pipeline {
 
         stage('Run tests') {
             steps {
-                sh 'PLAYWRIGHT_BROWSERS_PATH=/var/lib/jenkins/.cache/ms-playwright venv/bin/pytest --alluredir=allure-results -v || true'
+                sh 'PLAYWRIGHT_BROWSERS_PATH=/var/lib/jenkins/.cache/ms-playwright python3 -m pytest --alluredir=allure-results -v || true'
             }
         }
     }
