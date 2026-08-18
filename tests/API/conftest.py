@@ -12,7 +12,7 @@ from utils.data_generators import generate_register_user
 
 @pytest.fixture(autouse=True)
 def check_db_access():
-    """Пропускает тест если БД недоступна (локальная разработка)."""
+    """Пропускает тест если БД недоступна."""
     try:
         conn = psycopg2.connect(
             host=os.getenv("DB_HOST"), port=os.getenv("DB_PORT"),
@@ -20,13 +20,13 @@ def check_db_access():
             password=os.getenv("DB_PASS"), connect_timeout=3,
         )
         conn.close()
-    except Exception:
-        pytest.skip("dev-Postgres недоступен - тест запускать в Jenkins")
+    except Exception as e:
+        print(f"\n=== DB ERROR: {e} ===\n")
+        pytest.skip(f"DB недоступна: {e}")
 
 
 @pytest.fixture(scope="session")
 def session():
-    """Сессия с ретраями на сетевые сбои. Живёт один прогон."""
     import requests
     s = requests.Session()
     retries = Retry(total=3, backoff_factor=1,
@@ -38,17 +38,15 @@ def session():
 
 @pytest.fixture()
 def api_manager(session):
-    """ApiManager - единая точка входа для всех API."""
     manager = ApiManager(session, AUTH_URL, API_URL)
     yield manager
     manager.close()
 
+
 @pytest.fixture()
 def created_user(api_manager):
-    """Создаёт пользователя через API и удаляет его после теста."""
     user = generate_register_user()
     user["email"] = user["email"].replace("_", "")
-
     response = api_manager.auth.register_user({
         "email": user["email"],
         "fullName": user["full_name"],
@@ -56,22 +54,18 @@ def created_user(api_manager):
         "passwordRepeat": user["password"],
     })
     created = response.json()
-
     created["password"] = user["password"]
-
     login_response = api_manager.auth.login({
         "email": user["email"],
         "password": user["password"],
     })
     created["token"] = login_response.json()["accessToken"]
-
     yield created
-
     api_manager.auth.delete_user(created["id"], created["token"])
+
 
 @pytest.fixture()
 def db():
-    """Открывает подключение к БД и закрывает после теста."""
     client = DbClient()
     yield client
     client.close()
