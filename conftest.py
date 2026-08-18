@@ -1,4 +1,3 @@
-import os
 import pytest  # Импортируем pytest для создания фикстур
 import allure
 from playwright.sync_api import sync_playwright  # Импортируем менеджер контекста Playwright

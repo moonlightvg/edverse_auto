@@ -10,7 +10,7 @@ from db.client import DbClient
 from utils.data_generators import generate_register_user
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def check_db_access():
     """Пропускает тест если БД недоступна."""
     try:
