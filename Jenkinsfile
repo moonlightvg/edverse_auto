@@ -28,19 +28,18 @@ pipeline {
             }
         }
 
+        stage('Debug env') {
+            steps {
+                sh 'echo "DB_HOST=$DB_HOST" && echo "DB_PORT=$DB_PORT" && echo "DB_NAME=$DB_NAME" && echo "DB_USER=$DB_USER"'
+            }
+        }
+
         stage('Run tests') {
             steps {
                 sh 'PLAYWRIGHT_BROWSERS_PATH=/var/lib/jenkins/.cache/ms-playwright venv/bin/pytest --alluredir=allure-results -v || true'
             }
         }
     }
-
-        stage('Debug') {
-            steps {
-                sh 'echo "DB_HOST=$DB_HOST" && echo "DB_PORT=$DB_PORT" && echo "DB_NAME=$DB_NAME"'
-        }
-}
-
 
     post {
         always {
