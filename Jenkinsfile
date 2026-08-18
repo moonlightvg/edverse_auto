@@ -24,7 +24,7 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'pip install --no-cache-dir -r requirements.txt'
+                sh 'pip install --no-cache-dir -r requirements.txt allure-commandline'
             }
         }
 
@@ -33,11 +33,18 @@ pipeline {
                 sh 'pytest --alluredir=allure-results -v || true'
             }
         }
+
+        stage('Generate Allure Report') {
+            steps {
+                sh 'allure generate allure-results --clean -o allure-report'
+            }
+        }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'allure-results/**', allowEmptyArchive: true
+            allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
+            archiveArtifacts artifacts: 'allure-report/**', allowEmptyArchive: true
         }
     }
 }
