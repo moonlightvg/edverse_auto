@@ -6,4 +6,4 @@ class LoginLocators:
     # Кнопки
     LOGIN_BUTTON = "[data-qa-id='login_submit_button']"
     # Регистрация
-    REGISTER_LINK = ("link", "Зарегистрироваться")
+    REGISTER_LINK = "a:has-text('Зарегистрироваться')"
